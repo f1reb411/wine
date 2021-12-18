@@ -6,31 +6,36 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 from collections import defaultdict
 from environs import Env
 
-env = Env()
-env.read_env()
-environment = Environment(
-    loader=FileSystemLoader('.'),
-    autoescape=select_autoescape(['html'])
-)
-template = environment.get_template('template.html')
 
-plant_year_foundation = env.int('plant_year_foundation')
-years_since_foundation = datetime.now().year - plant_year_foundation
+def main():
+    env = Env()
+    env.read_env()
+    environment = Environment(
+        loader=FileSystemLoader('.'),
+        autoescape=select_autoescape(['html'])
+    )
+    template = environment.get_template('template.html')
 
-data_file = env.str('data_file')
-products = pandas.read_excel(data_file, keep_default_na=False).to_dict(orient='records')
+    plant_foundation_year = env.int('PLANT_FOUNDATION_YEAR')
+    years_since_foundation = datetime.now().year - plant_foundation_year
 
-categories_dict = {'Белые вина': [], 'Красные вина': [], 'Напитки': []}
-beverages = defaultdict(list, categories_dict)
+    filepath = env.str('FILE_PATH')
+    products = pandas.read_excel(filepath, keep_default_na=False).to_dict(orient='records')
 
-for product in products:
-    beverages[product['Категория']].append(product)
+    beverages = defaultdict(list)
 
-rendered_page = template.render(years=years_since_foundation,
-                                beverages=beverages)
+    for product in products:
+        beverages[product['Категория']].append(product)
 
-with open('index.html', 'w', encoding="utf8") as file:
-    file.write(rendered_page)
+    rendered_page = template.render(years=years_since_foundation,
+                                    beverages=beverages)
 
-server = HTTPServer(('0.0.0.0', 8000), SimpleHTTPRequestHandler)
-server.serve_forever()
+    with open('index.html', 'w', encoding="utf8") as file:
+        file.write(rendered_page)
+
+    server = HTTPServer(('0.0.0.0', 8000), SimpleHTTPRequestHandler)
+    server.serve_forever()
+
+
+if __name__ == '__main__':
+    main()
