@@ -114,28 +114,28 @@
           </div>
         </div>
         <div class="row">
-          {% for category_product, product in beverages | dictsort %}
+          {% for beverage_category, beverage in beverages | dictsort %}
             <div class="col-12 section-title text-center mb-5">
-              <h2 class="d-block">{{ category_product }}</h2> </div>
-            {% for item in product %}
+              <h2 class="d-block">{{ beverage_category }}</h2> </div>
+            {% for product in beverage %}
               <div class="col-lg-4 mb-5 col-md-6">
                 <div class="wine_v_1 text-center pb-4 pt-5">
-                <img src="images/{{ item.Картинка }}" alt="Image" class="img-fluid">
-              {% if item.Акция %}
-              <img src="assets/profitable.png" style="width:10rem;height: 10rem;position:absolute;right: -20px;top: -20px;">
-              {% endif %}
-              <div>
-                <h3 class="heading mt-3 mb-3 text-dark">{{ item.Название }}</h3>
-                <p>
-                  {% if item.Сорт %}
-                  Сорт винограда - {{ item.Сорт }}
+                  <img src="images/{{ product.Картинка }}" alt="Image" class="img-fluid">
+                  {% if product.Акция %}
+                    <img src="assets/profitable.png" style="width:10rem;height: 10rem;position:absolute;right: -20px;top: -20px;">
                   {% endif %}
-                  <br/>
-                  <span class="price">{{ item.Цена }} р.</span>
-                </p>
+                  <div>
+                  <h3 class="heading mt-3 mb-3 text-dark">{{ product.Название }}</h3>
+                  <p>
+                    {% if product.Сорт %}
+                    Сорт винограда - {{ product.Сорт }}
+                    {% endif %}
+                    <br/>
+                    <span class="price">{{ product.Цена }} р.</span>
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
             {% endfor %}
           {% endfor %}
         </div>
